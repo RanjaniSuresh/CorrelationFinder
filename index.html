@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>Natural Disasters VS Population Migration</title>
+      <link rel="stylesheet" href="css/bootstrap.min.css" />
+      <link rel="stylesheet" href="css/mystyle.css" />
+      <style type="text/css">
+      </style>
+   </head>
+   <body>
+      <div class="header">
+         <div class="container">
+            <div class="navbar-header">
+               <button type="button" id="nav-toggle" class="navbar-toggle" data-toggle="collapse" data-target="#main-nav">
+               <span class="sr-only">Toggle navigation</span>
+               <span class="icon-bar"></span>
+               <span class="icon-bar"></span>
+               <span class="icon-bar"></span>
+               </button>
+               <a href="#" class="navbar-brand scroll-top">Home</a>
+            </div>
+            <ul class="nav navbar-nav">
+               <li><a href="#" class="scroll-link" data-id="DisasterStatistic">Disaster Statistic</a></li>
+               <li><a href="#" class="scroll-link" data-id="OutflowStatistic">Outflow Statistic</a></li>
+               <li><a href="#" class="scroll-link" data-id="InflowStatistic">Inflow Statistic</a></li>
+               <li><a href="#" class="scroll-link" data-id="DisasterVsOutflow">DisasterVsOutflow</a></li>
+               <li><a href="#" class="scroll-link" data-id="DisasterVsInflow">DisasterVsInflow</a></li>
+            </ul>
+         </div>
+         <!--/.container-->
+      </div>
+      <!--/.header-->
+      <div class="page-section">
+         <div class="container">
+            <h1><I>Correlation between natural disaster occurrence and population migrations per state</I></h1>
+            <div style="border-width: 1px; border-style: solid; border-radius:5px; border-color:#6E040B">
+               <p class="lead">
+                  The project aims to determine if a correlation exists between occurrence of natural disasters and population migration patterns. In other words,
+                  the goal is to find if occurrence of natural disasters triggers population to migrate to a safer location.
+                  <br/>For this purpose, the project combines together the data about population migration available from the Internal Revenue Service for the year 2007-2008,
+                  and the data related to occurrence of natural disasters available from the Federal Emergency Management Agency for the same period.
+               </p>
+            </div>
+            <p class="lead" style="padding-top:30px;">Use the navigation bar above to scroll to visualizations of different statistics.</p>
+         </div>
+         <!--/.container-->
+      </div>
+      <!--/.page-section-->
+      <div id="DisasterStatistic" class="page-section">
+         <div class="grid">
+            <h3 class="geochart-heading"style="text-align: center">Chart Depicting Occurrence of Disasters</h3>
+            <p class="geochart-heading text-info small" style="padding-left: 100px">Click on a state to view details.</p>
+            <div id="DisasterGeochart" class="chart">
+            </div>
+            <div id="DisasterPiechart" class="piechart">
+            </div>
+         </div>
+         <!--/.container-->
+      </div>
+      <!--/#asia-->
+      <div id="OutflowStatistic" class="page-section">
+         <div class="grid">
+            <h3 class="geochart-heading" style="text-align: center">Chart Depicting Migration Outflow</h3>
+            <p class="geochart-heading text-info small" style="padding-left: 100px">Click on a state to view details.</p>
+            <div id="OutflowGeochart" class="chart">
+            </div>
+            <div id="OutflowPiechart" class="piechart">
+            </div>
+         </div>
+         <!--/.container-->
+      </div>
+      <!--/#australia-->
+      <div id="InflowStatistic" class="page-section">
+         <div class="grid">
+            <h3 class="geochart-heading" style="text-align: center">Chart Depicting Migration Inflow</h3>
+            <p class="geochart-heading text-info small"style="padding-left: 100px">Click on a state to view details.</p>
+            <div id="InflowGeochart" class="chart">
+            </div>
+            <div id="InflowPiechart" class="piechart">
+            </div>
+         </div>
+         <!--/.container-->
+      </div>
+      <!--/#europe-->
+      <div id="DisasterVsOutflow" class="page-section">
+         <h3 class="geochart-heading">Comparison Between Disaster Occurrence and Migration Outflow</h3>
+         <div id="DisasterVsOutflowChart" class="container scatterchart">
+         </div>
+         <!--/.container-->
+      </div>
+      <!--/#africa-->
+      <div id="DisasterVsInflow" class="page-section">
+         <h3 class="geochart-heading">Comparison Between Disaster Occurrence and Migration Inflow</h3>
+         <div id="DisasterVsInflowChart" class="container scatterchart">
+         </div>
+         <!--/.container-->
+      </div>
+      <!--/#antarctica-->
+      <!--/.page-section-->
+      <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js" type="text/javascript"></script>
+      <script src="js/bootstrap.min.js" type="text/javascript"></script>
+      <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+      <script type="text/javascript">
+         $(document).ready(function() {
+         	// navigation click actions	
+         	$('.scroll-link').on('click', function(event){
+         		event.preventDefault();
+         		var sectionID = $(this).attr("data-id");
+         		scrollToID('#' + sectionID, 750);
+         	});
+         	// scroll to top action
+         	$('.scroll-top').on('click', function(event) {
+         		event.preventDefault();
+         		$('html, body').animate({scrollTop:0}, 'slow'); 		
+         	});
+         	// mobile nav toggle
+         	$('#nav-toggle').on('click', function (event) {
+         		event.preventDefault();
+         		$('#main-nav').toggleClass("open");
+         	});
+         });
+         // scroll function
+         function scrollToID(id, speed){
+         	var offSet = 50;
+         	var targetOffset = $(id).offset().top - offSet;
+         	var mainNav = $('#main-nav');
+         	$('html,body').animate({scrollTop:targetOffset}, speed);
+         	if (mainNav.hasClass("open")) {
+         		mainNav.css("height", "1px").removeClass("in").addClass("collapse");
+         		mainNav.removeClass("open");
+         	}
+         }
+         if (typeof console === "undefined") {
+             console = {
+                 log: function() { }
+             };
+         }
+      </script>
+      <script>
+         google.load("visualization", "1", {packages:["corechart", "geochart"]});
+            google.setOnLoadCallback(drawVisualizations);
+         
+         function drawVisualizations(){
+             drawDisasterGeochart();
+         	drawDisasterColumnChart();
+         	drawOutflowGeochart();
+         	drawInflowGeochart();
+         	drawDisasterVsOutflowChart();
+         	drawDisasterVsInflowChart();
+         }
+         
+         function drawDisasterVsOutflowChart() {
+                var query = new google.visualization.Query('https://docs.google.com/spreadsheets/d/1WcdLckyBOujNRMTAzldRJJfXb-iaRVreEVETPCYP1qY/edit?usp=sharing');
+         		
+         	query.setQuery('SELECT B,C');
+         	
+         	// Send the query with a callback function.
+         	query.send(handleQueryResponse);
+         
+         	function handleQueryResponse(response) {
+         		if (response.isError()) {
+         		  alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
+         		  return;
+         		}
+         
+         		var data = response.getDataTable();
+         		
+         		var options = {
+         		  
+         		  title: 'Wavelength vs. Reflectance',
+         		  hAxis: {title: 'Wavelength', minValue: 0, maxValue: 30},
+         		  vAxis: {title: 'Reflectance', minValue: 0},
+         		  legend: 'none'
+         		};
+         
+         		var chart = new google.visualization.LineChart(document.getElementById('DisasterVsOutflowChart'));
+         
+         		chart.draw(data, options);
+         	}
+         	
+                
+            }
+         
+         
+         function drawDisasterVsInflowChart() {
+                var query = new google.visualization.Query('https://docs.google.com/spreadsheets/d/1iy_ZHQyAW-3fFJEC1HDW34BhpEY__AwfPrPHp4suhSI/edit?usp=sharing');
+         	
+         	// Apply query language statement.
+         	query.setQuery('SELECT B,C');
+         	
+         	// Send the query with a callback function.
+         	query.send(handleQueryResponse);
+         
+         	function handleQueryResponse(response) {
+         		if (response.isError()) {
+         		  alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
+         		  return;
+         		}
+         
+         		var data = response.getDataTable();
+         		
+         		var options = {
+         		  
+         		  title: 'DisasterCount vs. Inflow',
+         		  hAxis: {title: 'Disasters', minValue: 0, maxValue: 30},
+         		  vAxis: {title: 'Inflows', minValue: 0},
+         		  legend: 'none'
+         		};
+         
+         		var chart = new google.visualization.BarChart(document.getElementById('DisasterVsInflowChart'));
+         
+         		chart.draw(data, options);
+         	}
+         	
+                
+            }
+         
+         function drawDisasterGeochart() {
+         	var query = new google.visualization.Query('https://docs.google.com/spreadsheets/d/1MfgNNG9WhpsP_UI5e-RY0XtlmBhN0eA2wGQE4o84HKY/edit?usp=sharing');
+         
+         	// Apply query language statement.
+         	query.setQuery('SELECT *');
+         	
+         	// Send the query with a callback function.
+         	query.send(handleQueryResponse);
+         
+           function handleQueryResponse(response) {
+         	if (response.isError()) {
+         	  alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
+         	  return;
+         	}
+         
+         	var data = response.getDataTable();
+         	
+         	var options = {colorAxis: {colors: ['#35B630', 'yellow', '#D65A13']}, datalessRegionColor:"#DEDEDE", region: "Banglore", resolution: "provinces"};
+         	var chart = new google.visualization.GeoChart(document.getElementById('DisasterGeochart'));
+         
+                chart.draw(data, options);
+         	
+         	//add selection listener to geochart
+         	google.visualization.events.addListener(chart, 'regionClick', drawDisasterPieChart);
+           }
+         }
+         
+         function drawDisasterColumnChart(){
+         
+         	var data = google.visualization.arrayToDataTable([
+         		['Disaster Types', 'Occurrences', {role:'style'}],
+         		['Snow',  8, 'Dark Blue'],
+         		['Hurricane',  16, 'Green'],
+         		['Fire',  116, 'Red'],
+         		['Severe Ice Storm',  12, 'Cyan'],
+         		['Freezing', 1, '#63ADAA'],
+         		['Severe Storm(s)', 115, '#00FF00'],
+         		['Flood', 5, 'Orange'],
+         		['Other', 1, '#AFB3B2']
+         	  ]);
+         
+         	var options = {
+         		title: 'Breakdown by types. [Total: 274]',
+         		hAxis: {title: 'Disaster Types'},
+         		legend: 'none'
+         	};
+         
+         	var chart = new google.visualization.ColumnChart(document.getElementById('DisasterPiechart'));
+         
+         	chart.draw(data, options);
+         
+         
+         }
+         
+            function drawDisasterPieChart(eventData) {
+         
+         	var usState = eventData.region;
+         	var index = usState.indexOf('-');
+         	var state = usState.slice(index+1);
+         	
+         	var query = new google.visualization.Query('https://docs.google.com/spreadsheets/d/1Cz156Km_PjmSmlKlPPz0jxwDUxo6E-Uld2B7fnzt7Nk/edit?usp=sharing');
+         
+         	// Apply query language statement.
+         	query.setQuery('SELECT B,C WHERE A=\''+state+'\'');
+         	
+         	// Send the query with a callback function.
+         	query.send(handleQueryResponse);
+         	
+         	function handleQueryResponse(response) {
+         		if (response.isError()) {
+         		  alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
+         		  return;
+         		}
+         
+         		var data = response.getDataTable();
+         		
+         		var options = {
+         			title:'Breakdown for '+state,
+         			pieSliceText: 'label'
+         		};
+         		var chart = new google.visualization.PieChart(document.getElementById('DisasterPiechart'));
+         
+         		chart.draw(data, options);
+         	}
+            }	
+         
+         
+         function drawOutflowGeochart() {
+         	var query = new google.visualization.Query('https://docs.google.com/spreadsheets/d/1Ftbi1AOUzHPaMSHAsRgU0XtJFoajUHNOkFcJWh9Xt9M/edit?usp=sharing');
+         
+         	// Apply query language statement.
+         	query.setQuery('SELECT *');
+         	
+         	// Send the query with a callback function.
+         	query.send(handleQueryResponse);
+         
+           function handleQueryResponse(response) {
+         	if (response.isError()) {
+         	  alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
+         	  return;
+         	}
+         
+         	var data = response.getDataTable();
+         	
+         	var options = {region: "US", resolution: "provinces"};
+         	var chart = new google.visualization.GeoChart(document.getElementById('OutflowGeochart'));
+         
+                chart.draw(data, options);
+         	
+         	//add selection listener to geochart
+         	google.visualization.events.addListener(chart, 'regionClick', drawOutflowPieChart);
+           }
+         }
+         
+         
+         function drawOutflowPieChart(eventData) {
+         
+         	var usState = eventData.region;
+         	var index = usState.indexOf('-');
+         	var state = usState.slice(index+1);
+         	
+         	var query = new google.visualization.Query('https://docs.google.com/spreadsheets/d/19F0FokLfwkHonvzyQQqi9r2y7hE5vwCYVeHw-Oxrm0s/edit?usp=sharing');
+         
+         	// Apply query language statement.
+         	query.setQuery('SELECT B,C WHERE A=\''+state+'\'');
+         	
+         	// Send the query with a callback function.
+         	query.send(handleQueryResponse);
+         	
+         	function handleQueryResponse(response) {
+         		if (response.isError()) {
+         		  alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
+         		  return;
+         		}
+         
+         		var data = response.getDataTable();
+         		
+         		var options = {
+         			title: 'Breakdown for '+state+'',
+         			pieSliceText: 'label'
+         		};
+         		var chart = new google.visualization.PieChart(document.getElementById('OutflowPiechart'));
+         
+         		chart.draw(data, options);
+         	}
+            }
+         
+         function drawInflowGeochart() {
+         	var query = new google.visualization.Query('https://docs.google.com/spreadsheets/d/1CfB9R3ztg1YaGRE-DjpY-7oKoFD3jCtBt5lIM66cink/edit?usp=sharing');
+         
+         	// Apply query language statement.
+         	query.setQuery('SELECT *');
+         	
+         	// Send the query with a callback function.
+         	query.send(handleQueryResponse);
+         
+           function handleQueryResponse(response) {
+         	if (response.isError()) {
+         	  alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
+         	  return;
+         	}
+         
+         	var data = response.getDataTable();
+         	
+         	var options = {region: "US", resolution: "provinces"};
+         	var chart = new google.visualization.GeoChart(document.getElementById('InflowGeochart'));
+         
+                chart.draw(data, options);
+         	
+         	//add selection listener to geochart
+         	google.visualization.events.addListener(chart, 'regionClick', drawInflowPieChart);
+           }
+         }
+         
+          function myClickHandler(eventData){
+         
+         	var usState = eventData.region;
+         	var index = usState.indexOf('-');
+         	var state = usState.slice(index+1);
+         
+         	alert('You selected ' + state);
+          }
+         
+         function drawInflowPieChart(eventData) {
+         
+         	var usState = eventData.region;
+         	var index = usState.indexOf('-');
+         	var state = usState.slice(index+1);
+         	
+         	var query = new google.visualization.Query('https://docs.google.com/spreadsheets/d/1a_hW2ACV8nJj5EnpEeZriSh896Yz1DgSJjwKhhzWl5M/edit?usp=sharing');
+         
+         	// Apply query language statement.
+         	query.setQuery('SELECT B,C WHERE A=\''+state+'\'');
+         	
+         	// Send the query with a callback function.
+         	query.send(handleQueryResponse);
+         	
+         	function handleQueryResponse(response) {
+         		if (response.isError()) {
+         		  alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
+         		  return;
+         		}
+         
+         		var data = response.getDataTable();
+         		
+         		var options = {
+         		    title: 'Breakdown for '+state+'',
+         			pieSliceText: 'label'
+         		};
+         		var chart = new google.visualization.PieChart(document.getElementById('InflowPiechart'));
+         
+         		chart.draw(data, options);
+         	}
+            }
+         
+         
+         $(window).resize(function(){
+         	drawVisualizations();
+         });
+      </script>
+   </body>
+</html>

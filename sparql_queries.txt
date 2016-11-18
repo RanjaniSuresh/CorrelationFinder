@@ -1,0 +1,119 @@
+##QUERY 1 - retrieve total no of inflows per state for 2007-2008 ###
+
+PREFIX raw: <http://logd.tw.rpi.edu/source/data-gov/dataset/1148/vocab/raw/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+SELECT  ?state_code ?total_inflow                                   
+WHERE {?sub raw:years ?years;
+            raw:state_code_dest ?state_code;
+            raw:state_code_origin "97";
+            raw:return_num  ?total_inflow .        
+            FILTER(?years="2007-2008" && ?state_code!="00") 
+} 
+group by ?state_code ?total_inflow 
+order by asc(?state_code) 
+
+
+
+##QUERY 2 - retrieve state from which there is inflow to particular state ##
+
+PREFIX raw: <http://logd.tw.rpi.edu/source/data-gov/dataset/1148/vocab/raw/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+SELECT  ?state_code ?inflow_state ?inflow                                    
+WHERE {?sub raw:years  ?years;
+            raw:state_code_dest ?state_code ;
+        raw:state_abbrv ?inflow_state ;
+        raw:return_num  ?inflow; 
+        raw:state_code_origin ?origincode.
+        FILTER(?years="2007-2008" && ?state_code !=?origincode && ?state_code !="00" && (xsd:int(?origincode)<57) )  
+		} group by ?state_code ?inflow_state ?inflow
+order by  asc(xsd:int(?state_code)) desc(xsd:int(?inflow))
+
+
+
+##QUERY 3 - retrieve total no of outflows per state for 2007-2008 ##
+
+PREFIX raw: <http://logd.tw.rpi.edu/source/data-gov/dataset/1149/vocab/raw/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+SELECT  ?state_code ?total_outflow                                   
+WHERE {?sub raw:years ?years;
+            raw:state_code_origin ?state_code;
+            raw:state_code_dest "97";
+            raw:return_num  ?total_outflow .        
+            FILTER(?years="2007-2008" && ?state_code!="00") 
+} 
+group by ?state_code ?total_outflow 
+order by asc(?state_code) 
+
+
+
+##QUERY 4 - retrieve state to which there is max outflow from particular state ##
+
+PREFIX raw: <http://logd.tw.rpi.edu/source/data-gov/dataset/1149/vocab/raw/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+SELECT  ?state_code ?outflow_state ?outflow                                    
+WHERE {?sub raw:years  ?years;
+            raw:state_code_origin ?state_code ;
+        raw:state_abbrv ?outflow_state ;
+        raw:return_num  ?outflow; 
+        raw:state_code_dest ?destcode.
+        FILTER(?years="2007-2008" && ?state_code !=?destcode && ?state_code !="00" && (xsd:int(?destcode)<57) )  
+		} group by ?state_code ?outflow_state ?outflow
+order by  asc(xsd:int(?state_code)) desc(xsd:int(?outflow))
+
+
+
+##QUERY 5 - get count of different type of disasters for 2007-2008 ##
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX raw: <http://logd.tw.rpi.edu/source/data-gov/dataset/1491/vocab/raw/>
+
+SELECT ?dtype (COUNT(DISTINCT ?dnum) AS ?disasterCount)
+WHERE {
+                ?sub raw:state ?state;
+                 raw:incident_begin_date ?date;
+                      raw:disaster_number ?dnum;
+                         raw:incident_type ?dtype.
+                FILTER(((CONTAINS(STR(?date), "-07"))||(CONTAINS(STR(?date), "-08"))) && ?state!='PR' && ?state!='FM' && ?state!='VI')
+        }
+group by ?dtype
+
+
+
+##QUERY 6 - get disaster count per state for 2007-2008 ##
+
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX raw: <http://logd.tw.rpi.edu/source/data-gov/dataset/1491/vocab/raw/>
+
+SELECT ?state (COUNT(DISTINCT ?dnum) AS ?disasterCount)
+WHERE {
+		?sub raw:state ?state;
+			 raw:incident_begin_date ?date;
+			 raw:disaster_number ?dnum.
+		FILTER(((CONTAINS(STR(?date), "-07"))||(CONTAINS(STR(?date), "-08"))) && ?state!='PR' && ?state!='FM' && ?state!='VI')	}
+GROUP BY ?state
+ORDER BY ?state
+
+
+
+##QUERY 7 - get disaster type per state for 2007-2008 ##
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX raw: <http://logd.tw.rpi.edu/source/data-gov/dataset/1491/vocab/raw/>
+
+SELECT ?state ?dtype (COUNT(DISTINCT ?dnum) AS ?disasterCount)
+WHERE {
+                ?sub raw:state ?state;
+		 raw:incident_begin_date ?date;
+                      raw:disaster_number ?dnum;
+			 raw:incident_type ?dtype.
+		FILTER(((CONTAINS(STR(?date), "-07"))||(CONTAINS(STR(?date), "-08"))) && ?state!='PR' && ?state!='FM' && ?state!='VI')
+	}
+group by ?state ?dtype 
+order by ?state
